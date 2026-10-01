@@ -1,0 +1,8 @@
+{
+  "name": "Sistema de Prevención de Accidentes",
+  "description": "Sistema de prevención de accidentes laborales con monitoreo de video en tiempo real, detección de riesgos (uso de celular, persona corriendo, caídas), análisis de sonido de impacto y captura de evidencias.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ]
+}
