@@ -4,6 +4,9 @@ Sistema inteligente para detección temprana de riesgos laborales y prevención 
 
 Migrado a Node.js + React + Vite + Tailwind CSS para su despliegue en Google AI Studio.
 
+> ⚡ **¿Cómo poner en marcha este programa manualmente en tu computadora?**  
+> Consulta la guía paso a paso sin herramientas de IA: 👉 **[`INICIALIZAR.md`](./INICIALIZAR.md)**
+
 ---
 
 ## 🚀 Características Principales
