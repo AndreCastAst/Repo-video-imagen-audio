@@ -33,6 +33,23 @@ Migrado a Node.js + React + Vite + Tailwind CSS para su despliegue en Google AI 
 - **Terminal de Salida**: Flujo de logs en vivo idéntico a la consola de ejecución de Python.
 - **Panel de Calibración**: Ajuste fino de umbrales de audio (5 a 35), movimiento (0.01 a 0.08), ángulo de inclinación (0.08 a 0.35) y cooldown.
 
+### 5. Módulo Forense de Análisis de Atributos de Imagen (Nuevo)
+- **Separación de Responsabilidades**: Desacopla la adquisición (Video/Audio) de la extracción de atributos y de la predicción por ML.
+- **Explorador Visual de `/capturas_riesgo/`**: Navegación de fotogramas guardados con filtrado, búsqueda e importación de fotos externas.
+- **Extractor de Atributos Medibles**:
+  - *Distancia Riesgo-Persona*: Medición euclídea normalizada y en píxeles con categorización por zonas (`contacto_directo`, `zona_inmediata`, `zona_media`, `distante`).
+  - *Biomecánica*: Ángulo del torso ($\theta$) respecto a la vertical, desviación hombro-cadera ($\Delta X$) y postura clasificada.
+  - *Entidades Observables*: Bounding boxes, áreas relativas (%) y conteo cuantitativo.
+  - *Óptica y Calidad*: Luminosidad ITU-R BT.601, contraste RMS y score de desenfoque por movimiento (*motion blur*).
+- **Contrato de Salida (DTO) para el Equipo de Predicción**: Generación, copiado y descarga de payload JSON estandarizado (`version_esquema: 2.0.0-handshake`).
+
+---
+
+## 📖 Documentación para el Equipo
+
+Para detalles exhaustivos de integración, diccionario de datos y pautas de desarrollo para el módulo de imagen, consulta:
+👉 **[`GUIA_MODULO_IMAGEN.md`](./GUIA_MODULO_IMAGEN.md)**
+
 ---
 
 ## 🛠️ Tecnologías
@@ -40,3 +57,4 @@ Migrado a Node.js + React + Vite + Tailwind CSS para su despliegue en Google AI 
 - **Frontend**: React 19, TypeScript, Vite 6, Tailwind CSS v4, Lucide React
 - **Audio**: Web Audio API (OscillatorNode, GainNode, AnalyserNode)
 - **Visión y Gráficos**: HTML5 Canvas con renderizado OSD estilo OpenCV
+- **Análisis de Imagen**: Procesamiento de fotogramas, cálculo de gradientes y matrices biomecánicas deterministas
