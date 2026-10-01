@@ -6,6 +6,7 @@ import { AudioMonitor } from './components/AudioMonitor';
 import { EvidenceGallery } from './components/EvidenceGallery';
 import { SystemLogs } from './components/SystemLogs';
 import { SettingsModal } from './components/SettingsModal';
+import { ImageAnalysisDashboard } from './components/ImageAnalysisModule/ImageAnalysisDashboard';
 import { DetectionState, EvidenceRecord, LogEntry, SystemConfig, RiskCategory } from './types';
 import { audioEngine } from './utils/audioEngine';
 import { ShieldCheck, AlertTriangle, Smartphone, Flame, Activity } from 'lucide-react';
@@ -20,6 +21,7 @@ const INITIAL_CONFIG: SystemConfig = {
 };
 
 export const App: React.FC = () => {
+  const [activeMainTab, setActiveMainTab] = useState<'monitoring' | 'image_analysis'>('monitoring');
   const [config, setConfig] = useState<SystemConfig>(INITIAL_CONFIG);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isAlarmPlaying, setIsAlarmPlaying] = useState(false);
@@ -204,12 +206,22 @@ export const App: React.FC = () => {
         onTestAlarm={handleTestAlarm}
         onOpenSettings={() => setIsSettingsOpen(true)}
         audioEnabled={config.audioAlarmaHabilitado}
+        activeTab={activeMainTab}
+        onSelectTab={setActiveMainTab}
+        evidenceCount={evidences.length}
       />
 
-      {/* Main Dashboard Container */}
+      {/* Main Container */}
       <main className="max-w-7xl w-full mx-auto p-4 sm:p-6 space-y-4 flex-1">
-        {/* Risk Banner */}
-        <RiskAlertBanner detection={detection} config={config} />
+        {activeMainTab === 'image_analysis' ? (
+          <ImageAnalysisDashboard
+            evidences={evidences}
+            onAddNewEvidence={(newEv) => setEvidences((prev) => [newEv, ...prev])}
+          />
+        ) : (
+          <>
+            {/* Risk Banner */}
+            <RiskAlertBanner detection={detection} config={config} />
 
         {/* Stats Row */}
         <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
@@ -297,7 +309,12 @@ export const App: React.FC = () => {
           evidences={evidences}
           onClear={() => setEvidences([])}
           onDeleteRecord={(id) => setEvidences((prev) => prev.filter((e) => e.id !== id))}
+          onOpenInAnalyzer={(record) => {
+            setActiveMainTab('image_analysis');
+          }}
         />
+          </>
+        )}
       </main>
 
       {/* Settings Modal */}

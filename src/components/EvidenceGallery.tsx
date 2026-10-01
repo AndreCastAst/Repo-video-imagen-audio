@@ -1,17 +1,19 @@
 import React, { useState } from 'react';
-import { Camera, Download, Trash2, Eye, ShieldAlert, X, Filter } from 'lucide-react';
+import { Camera, Download, Trash2, Eye, ShieldAlert, X, Filter, Sliders } from 'lucide-react';
 import { EvidenceRecord, RiskCategory } from '../types';
 
 interface EvidenceGalleryProps {
   evidences: EvidenceRecord[];
   onClear: () => void;
   onDeleteRecord: (id: string) => void;
+  onOpenInAnalyzer?: (record: EvidenceRecord) => void;
 }
 
 export const EvidenceGallery: React.FC<EvidenceGalleryProps> = ({
   evidences,
   onClear,
   onDeleteRecord,
+  onOpenInAnalyzer,
 }) => {
   const [selectedEvidence, setSelectedEvidence] = useState<EvidenceRecord | null>(null);
   const [filter, setFilter] = useState<'all' | RiskCategory>('all');
@@ -142,14 +144,28 @@ export const EvidenceGallery: React.FC<EvidenceGalleryProps> = ({
 
                   {/* Actions */}
                   <div className="mt-2 pt-2 border-t border-slate-800/80 flex items-center justify-between text-xs">
-                    <button
-                      onClick={() => handleDownload(record)}
-                      className="text-slate-400 hover:text-white flex items-center gap-1 transition-colors"
-                      title="Descargar archivo JPG"
-                    >
-                      <Download className="w-3.5 h-3.5" />
-                      <span>JPG</span>
-                    </button>
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={() => handleDownload(record)}
+                        className="text-slate-400 hover:text-white flex items-center gap-1 transition-colors"
+                        title="Descargar archivo JPG"
+                      >
+                        <Download className="w-3.5 h-3.5" />
+                        <span>JPG</span>
+                      </button>
+
+                      {onOpenInAnalyzer && (
+                        <button
+                          onClick={() => onOpenInAnalyzer(record)}
+                          className="text-amber-400 hover:text-amber-300 flex items-center gap-1 font-medium transition-colors"
+                          title="Analizar a fondo en Módulo de Atributos"
+                        >
+                          <Sliders className="w-3.5 h-3.5" />
+                          <span>Analizar</span>
+                        </button>
+                      )}
+                    </div>
+
                     <button
                       onClick={() => onDeleteRecord(record.id)}
                       className="text-slate-500 hover:text-red-400 transition-colors"
@@ -208,13 +224,28 @@ export const EvidenceGallery: React.FC<EvidenceGalleryProps> = ({
                 </div>
               </div>
 
-              <button
-                onClick={() => handleDownload(selectedEvidence)}
-                className="px-4 py-2 bg-red-600 hover:bg-red-500 text-white rounded-xl font-medium flex items-center gap-2 transition-colors"
-              >
-                <Download className="w-4 h-4" />
-                <span>Descargar Evidencia (.jpg)</span>
-              </button>
+              <div className="flex items-center gap-2">
+                {onOpenInAnalyzer && (
+                  <button
+                    onClick={() => {
+                      onOpenInAnalyzer(selectedEvidence);
+                      setSelectedEvidence(null);
+                    }}
+                    className="px-3.5 py-2 bg-amber-600 hover:bg-amber-500 text-white rounded-xl font-semibold flex items-center gap-1.5 transition-colors"
+                  >
+                    <Sliders className="w-4 h-4" />
+                    <span>Analizar Atributos</span>
+                  </button>
+                )}
+
+                <button
+                  onClick={() => handleDownload(selectedEvidence)}
+                  className="px-4 py-2 bg-red-600 hover:bg-red-500 text-white rounded-xl font-medium flex items-center gap-2 transition-colors"
+                >
+                  <Download className="w-4 h-4" />
+                  <span>Descargar Evidencia (.jpg)</span>
+                </button>
+              </div>
             </div>
           </div>
         </div>
