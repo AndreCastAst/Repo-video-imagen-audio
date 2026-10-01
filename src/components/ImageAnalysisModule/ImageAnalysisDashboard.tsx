@@ -100,29 +100,32 @@ export const ImageAnalysisDashboard: React.FC<ImageAnalysisDashboardProps> = ({
         </div>
 
         {/* View Switcher: Inspector vs Contract */}
-        <div className="flex items-center bg-slate-950 p-1 rounded-xl border border-slate-800 text-xs">
+        <div className="flex items-center bg-slate-950 p-1.5 rounded-xl border border-slate-700/80 text-xs gap-1 shadow-inner">
           <button
             onClick={() => setActiveSubTab('inspector')}
-            className={`px-3 py-1.5 rounded-lg font-medium flex items-center gap-1.5 transition-colors ${
+            className={`px-3 py-1.5 rounded-lg font-semibold flex items-center gap-1.5 transition-all ${
               activeSubTab === 'inspector'
-                ? 'bg-amber-600 text-white shadow'
-                : 'text-slate-400 hover:text-white'
+                ? 'bg-amber-600 text-white shadow-md'
+                : 'text-slate-400 hover:text-slate-200 hover:bg-slate-900'
             }`}
           >
             <Sliders className="w-3.5 h-3.5" />
-            <span>Inspección de Atributos</span>
+            <span>1. Inspección & Capas</span>
           </button>
 
           <button
             onClick={() => setActiveSubTab('contract')}
-            className={`px-3 py-1.5 rounded-lg font-medium flex items-center gap-1.5 transition-colors ${
+            className={`px-3 py-1.5 rounded-lg font-semibold flex items-center gap-1.5 transition-all ${
               activeSubTab === 'contract'
-                ? 'bg-amber-600 text-white shadow'
-                : 'text-slate-400 hover:text-white'
+                ? 'bg-amber-600 text-white shadow-md'
+                : 'text-amber-400 hover:text-amber-300 hover:bg-amber-950/30'
             }`}
           >
             <Code2 className="w-3.5 h-3.5" />
-            <span>Contrato de Predicción (JSON)</span>
+            <span>2. Formato JSON Predicción</span>
+            <span className="px-1.5 py-0.2 rounded text-[10px] font-mono bg-emerald-950 text-emerald-300 border border-emerald-800">
+              DTO
+            </span>
           </button>
         </div>
       </div>
@@ -153,7 +156,10 @@ export const ImageAnalysisDashboard: React.FC<ImageAnalysisDashboardProps> = ({
             </div>
           ) : currentReport ? (
             activeSubTab === 'inspector' ? (
-              <AttributeInspector report={currentReport} />
+              <AttributeInspector
+                report={currentReport}
+                onSwitchToContract={() => setActiveSubTab('contract')}
+              />
             ) : (
               <PredictionContractView report={currentReport} />
             )

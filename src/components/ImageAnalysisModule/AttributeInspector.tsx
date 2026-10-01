@@ -19,17 +19,44 @@ import {
   Info,
   CheckCircle2,
   AlertTriangle,
+  Code2,
+  Copy,
+  Check,
+  Download,
+  ArrowRight,
 } from 'lucide-react';
 
 interface AttributeInspectorProps {
   report: ImageAttributeReport;
+  onSwitchToContract?: () => void;
 }
 
-export const AttributeInspector: React.FC<AttributeInspectorProps> = ({ report }) => {
+export const AttributeInspector: React.FC<AttributeInspectorProps> = ({ report, onSwitchToContract }) => {
   const [showBoxes, setShowBoxes] = useState(true);
   const [showSkeleton, setShowSkeleton] = useState(true);
   const [showSpatialVector, setShowSpatialVector] = useState(true);
   const [showQualityHUD, setShowQualityHUD] = useState(true);
+  const [copiedJson, setCopiedJson] = useState(false);
+
+  const jsonString = JSON.stringify(report.handshakePayload, null, 2);
+
+  const handleCopyJson = () => {
+    navigator.clipboard.writeText(jsonString);
+    setCopiedJson(true);
+    setTimeout(() => setCopiedJson(false), 2000);
+  };
+
+  const handleDownloadJson = () => {
+    const blob = new Blob([jsonString], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `${report.nombreArchivo}.feature_vector.json`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const imgRef = useRef<HTMLImageElement>(new Image());
@@ -460,6 +487,64 @@ export const AttributeInspector: React.FC<AttributeInspectorProps> = ({ report }
               </div>
             </div>
           </div>
+        </div>
+      </div>
+
+      {/* Direct JSON Feature Vector Output Box for Prediction Team */}
+      <div className="bg-slate-900 border border-slate-800 rounded-2xl p-4 shadow-xl">
+        <div className="flex flex-wrap items-center justify-between pb-3 border-b border-slate-800 gap-3">
+          <div className="flex items-center gap-2">
+            <div className="p-2 rounded-lg bg-amber-950/70 border border-amber-600/70 text-amber-400">
+              <Code2 className="w-5 h-5" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <h4 className="text-xs font-bold text-white uppercase tracking-wider">
+                  Salida Estandarizada para el Módulo de Predicción (JSON)
+                </h4>
+                <span className="px-2 py-0.5 rounded text-[10px] font-mono bg-emerald-950 text-emerald-300 border border-emerald-800">
+                  Esquema v2.0.0-handshake
+                </span>
+              </div>
+              <p className="text-[11px] text-slate-400">
+                Vector de características cuantitativas listo para alimentar el modelo de Machine Learning
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2">
+            {onSwitchToContract && (
+              <button
+                onClick={onSwitchToContract}
+                className="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs font-medium flex items-center gap-1.5 transition-colors"
+                title="Ver diccionario de datos y flujo de arquitectura"
+              >
+                <span>Ver Contrato Completo</span>
+                <ArrowRight className="w-3.5 h-3.5 text-amber-400" />
+              </button>
+            )}
+
+            <button
+              onClick={handleCopyJson}
+              className="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs font-medium flex items-center gap-1.5 transition-colors"
+            >
+              {copiedJson ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5 text-slate-400" />}
+              <span>{copiedJson ? '¡Copiado!' : 'Copiar JSON'}</span>
+            </button>
+
+            <button
+              onClick={handleDownloadJson}
+              className="px-3 py-1.5 rounded-lg bg-red-600 hover:bg-red-500 text-white text-xs font-semibold flex items-center gap-1.5 transition-colors"
+            >
+              <Download className="w-3.5 h-3.5" />
+              <span>Descargar .json</span>
+            </button>
+          </div>
+        </div>
+
+        {/* Formatted JSON Box */}
+        <div className="mt-3 bg-black/90 p-4 rounded-xl border border-slate-800 font-mono text-xs overflow-x-auto max-h-[300px] text-amber-300 leading-relaxed selection:bg-amber-500 selection:text-black">
+          <pre>{jsonString}</pre>
         </div>
       </div>
     </div>
